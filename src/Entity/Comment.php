@@ -9,6 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=CommentRepository::class)
+ * @ApiResource(
+ *     collectionOperations={"get"={"normalization_context"={"groups"="comments:get"}}},
+ *     itemOperations={"get"={"normalization_context"={"groups"="comment:get"}}},
+ * )
  */
 class Comment
 {
@@ -25,15 +29,15 @@ class Comment
     private $content;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $creation_date;
-
-    /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $id_user;
+    private $user;
+
+    /**
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     */
+    private $creation_date;
 
     public function getId(): ?int
     {
@@ -52,26 +56,26 @@ class Comment
         return $this;
     }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
     public function getCreationDate(): ?\DateTimeInterface
     {
         return $this->creation_date;
     }
 
-    public function setCreationDate(\DateTimeInterface $creation_date): self
+    public function setCreationDate(?\DateTimeInterface $creation_date): self
     {
         $this->creation_date = $creation_date;
-
-        return $this;
-    }
-
-    public function getIdUser(): ?User
-    {
-        return $this->id_user;
-    }
-
-    public function setIdUser(?User $id_user): self
-    {
-        $this->id_user = $id_user;
 
         return $this;
     }
