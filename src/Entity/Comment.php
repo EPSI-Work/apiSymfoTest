@@ -11,7 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=CommentRepository::class)
  * @ApiResource(
  *     collectionOperations={"get"={"normalization_context"={"groups"="comments:get"}}},
- *     itemOperations={"get"={"normalization_context"={"groups"="comment:get"}}},
+ *     itemOperations={"get"={"normalization_context"={"groups"="comment:get"}},
+ * "put"={"normalization_context"={"groups"="comments:put"}},
+ * "delete"={"normalization_context"={"groups"="comments:delete"}}},
  * )
  */
 class Comment
@@ -20,26 +22,26 @@ class Comment
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"comments:get", "comment:get"})
+     * @Groups({"comments:get", "comment:get", "comments:put", "comments:delete"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"comments:get", "comment:get"})
+     * @Groups({"comments:get", "comment:get", "comments:put", "comments:delete"})
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"comments:get", "comment:get"})
+     * @Groups({"comments:get", "comment:get", "comments:put", "comments:delete"})
      */
     private $user;
 
     /**
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     * @Groups({"comments:get", "comment:get"})
+     * @Groups({"comments:get", "comment:get", "comments:put", "comments:delete"})
      */
     private $creation_date;
 
