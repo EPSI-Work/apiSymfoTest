@@ -13,7 +13,7 @@ class ExampleTest extends TestCase
     {
         $capitalizeController = new CapitalizeController();
 
-        $this->assertSame($text, $capitalizeController->capitalize($expected));
+        $this->assertSame($expected, $capitalizeController->capitalize($text));
     }
 
     public function stringProvider()
