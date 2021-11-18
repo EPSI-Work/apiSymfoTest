@@ -3,11 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=CommentRepository::class)
  * @ApiResource(
  *     collectionOperations={"get"={"normalization_context"={"groups"="comments:get"}}},
@@ -20,22 +20,26 @@ class Comment
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"comments:get", "comment:get"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"comments:get", "comment:get"})
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"comments:get", "comment:get"})
      */
     private $user;
 
     /**
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     * @Groups({"comments:get", "comment:get"})
      */
     private $creation_date;
 
