@@ -10,10 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
  * @ApiResource(
- *     collectionOperations={"get"={"normalization_context"={"groups"="comments:get"}}},
+ *     collectionOperations={"get"={"normalization_context"={"groups"="comments:get"}},
+ * "post"={"normalization_context"={"groups"="comments:post"}, "denormalization_context"={"groups"="comments:createpost"}}},
  *     itemOperations={"get"={"normalization_context"={"groups"="comment:get"}},
- * "put"={"normalization_context"={"groups"="comments:put"}},
- * "delete"={"normalization_context"={"groups"="comments:delete"}}},
+ * "put"={"normalization_context"={"groups"="comment:put"}, "denormalization_context"={"groups"="comments:editput"}},
+ * "delete"={"normalization_context"={"groups"="comment:delete"}}},
  * )
  */
 class Comment
@@ -22,28 +23,48 @@ class Comment
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"comments:get", "comment:get", "comments:put", "comments:delete"})
+     * @Groups({"comments:get", "comments:post", "comment:get", "comments:get", "comment:put", "comment:delete"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"comments:get", "comment:get", "comments:put", "comments:delete"})
+     * @Groups({"comments:get", "comments:post", "comments:createpost", "comment:get", "comment:put", "comments:editput", "comment:delete"})
      */
     private $content;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"comments:get", "comment:get", "comments:put", "comments:delete"})
+     * @ORM\Column(type="integer")
+     * @Groups({"comments:get", "comments:post", "comments:createpost", "comment:get", "comment:put", "comments:editput", "comment:delete"})
      */
-    private $user;
+    private $userId;
 
     /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     * @Groups({"comments:get", "comment:get", "comments:put", "comments:delete"})
+     * @ORM\Column(name="creation_date", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     * @Groups({"comments:get", "comments:post", "comment:get", "comment:put", "comment:delete"})
      */
     private $creation_date;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersistSetCreationDate()
+    {
+        $this->creation_date = new \DateTime();
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function onPostPersistSetCreationDate()
+    {
+        $this->creation_date = new \DateTime();
+    }
+
+    public function __construct()
+    {
+        $this->creation_date = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -62,14 +83,14 @@ class Comment
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUserId(): ?int
     {
-        return $this->user;
+        return $this->userId;
     }
 
-    public function setUser(?User $user): self
+    public function setUserId(?int $userId): self
     {
-        $this->user = $user;
+        $this->userId = $userId;
 
         return $this;
     }
