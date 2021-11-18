@@ -5,12 +5,23 @@ use App\Controller\CapitalizeController;
 
 class ExampleTest extends TestCase
 {
-    public function testCapitalize()
+
+    /**
+     * @dataProvider stringProvider
+     */
+    public function testCapitalize($text, $expected)
     {
         $capitalizeController = new CapitalizeController();
 
-        $this->assertSame("BONJOUR", $capitalizeController->capitalize("bonjour"));
-        $this->assertSame("1234", $capitalizeController->capitalize("1234"));
-        $this->assertSame("BONJOUR1234", $capitalizeController->capitalize("bonjour1234"));
+        $this->assertSame($text, $capitalizeController->capitalize($expected));
+    }
+
+    public function stringProvider()
+    {
+        return [
+            ["BONJOUR", "BONJOUR"],
+            ["1234", "1234"],
+            ["BONJOUR1234", "BONJOUR1234"],
+        ];
     }
 }
